@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Макарона, кафе-кулинария в посёлке Озёрный: домашняя еда с витрины. Солнечный микрорайон, 333, ежедневно с 10:00 до 21:00.">
+<title>Макарона</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Onest:wght@400;500;700&family=Unbounded:wght@500;800&display=swap">
+<style>
+/* Layout: упаковка из-под макарон. Нюдовая "пачка", огромное слово, живая макаронина в шапке,
+   витрина из ценников с дырочкой и поднос, который собирает посетитель. Ночью пачка становится шоколадной. */
+:root{
+  --font-display:'Unbounded','Arial Black',system-ui,sans-serif;
+  --font-body:'Onest',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font-hand:'Caveat','Segoe Script','Bradley Hand',cursive;
+
+  --bg:#E7D5C3;
+  --fg:#3A2A22;
+  --muted:#6A5244;
+  --surface:#F6ECE2;
+  --surface-fg:#3A2A22;
+  --line:#3A2A22;
+  --soft:rgba(58,42,34,.25);
+  --accent:#A8574A;
+  --accent-fg:#FFFFFF;
+  --btn-bg:#3A2A22;
+  --btn-fg:#F1E2D2;
+  --ok:#4F7A4A;
+  --band:#4A372D;
+  --band-fg:#F3E6D8;
+  --band-muted:#CDB7A3;
+  --sticker:#F1DFCC;
+  --sticker-fg:#3A2A22;
+  --sticker-muted:#6A5244;
+  --noodle-edge:#3A2A22;
+  --noodle-fill:#F4E3CF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#241B17;
+    --fg:#EBDCCB;
+    --muted:#BDA892;
+    --surface:#32261F;
+    --surface-fg:#EBDCCB;
+    --line:#EBDCCB;
+    --soft:rgba(235,220,203,.28);
+    --accent:#D98F7B;
+    --accent-fg:#2A1D17;
+    --btn-bg:#E3C5A8;
+    --btn-fg:#2A1D17;
+    --ok:#8DC48A;
+    --band:#2E231D;
+    --band-fg:#EBDCCB;
+    --band-muted:#BDA892;
+    --sticker:#E3C5A8;
+    --sticker-fg:#2A1D17;
+    --sticker-muted:#5E4637;
+    --noodle-edge:#1B130F;
+    --noodle-fill:#E3C5A8;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#241B17;
+  --fg:#EBDCCB;
+  --muted:#BDA892;
+  --surface:#32261F;
+  --surface-fg:#EBDCCB;
+  --line:#EBDCCB;
+  --soft:rgba(235,220,203,.28);
+  --accent:#D98F7B;
+  --accent-fg:#2A1D17;
+  --btn-bg:#E3C5A8;
+  --btn-fg:#2A1D17;
+  --ok:#8DC48A;
+  --band:#2E231D;
+  --band-fg:#EBDCCB;
+  --band-muted:#BDA892;
+  --sticker:#E3C5A8;
+  --sticker-fg:#2A1D17;
+  --sticker-muted:#5E4637;
+  --noodle-edge:#1B130F;
+  --noodle-fill:#E3C5A8;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font:400 1.0625rem/1.55 var(--font-body);-webkit-text-size-adjust:100%}
+h1,h2,h3,p,ul,ol,dl,dd{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--fg);outline-offset:3px}
+
+.wrap{width:100%;max-width:1160px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* top bar */
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-block:16px}
+.logo{font:800 1.1rem var(--font-display);letter-spacing:-.02em;text-decoration:none}
+.nav{display:flex;flex-wrap:wrap;gap:4px 20px;margin-left:auto}
+.nav a{font-weight:500;text-decoration:none;padding-block:6px;border-bottom:2px solid transparent}
+.nav a:hover{border-bottom-color:var(--fg)}
+.pill{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:999px;padding:5px 14px;font-size:.92rem;font-weight:500;white-space:nowrap}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--ok);flex:none}
+.pill.closed .dot{background:var(--accent)}
+@media (max-width:720px){
+  .nav{order:3;flex-basis:100%;margin-left:0;gap:4px 18px}
+  .pill{margin-left:auto}
+}
+
+/* hero */
+.hero{padding-block:clamp(12px,3vw,36px) clamp(44px,6vw,80px)}
+.kicker{font-size:.8rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.mark{font:800 clamp(2.5rem,12.2vw,8.6rem)/.95 var(--font-display);letter-spacing:-.04em;margin-top:10px;min-width:0}
+.ribbon{display:block;width:100%;height:24px;margin-top:6px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(24px,4vw,56px);margin-top:clamp(20px,3vw,36px);align-items:center}
+.lead{font-size:clamp(1.2rem,2.4vw,1.55rem);line-height:1.35;max-width:28ch;text-wrap:balance}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;border:2px solid var(--line);background:transparent;font-weight:700;text-decoration:none;text-align:center;transition:transform .15s ease}
+.btn:hover{transform:translateY(-2px)}
+.btn-main{background:var(--btn-bg);color:var(--btn-fg);border-color:var(--btn-bg)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.chip{border:2px solid var(--line);border-radius:6px;padding:3px 10px;font-size:.92rem;font-weight:500}
+.chip.rate{background:var(--fg);color:var(--bg)}
+.noodle-box{position:relative;height:clamp(260px,34vw,380px);border:3px solid var(--line);border-radius:28px;background:var(--surface);overflow:hidden;box-shadow:6px 6px 0 var(--line)}
+#noodles{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+.stamp{position:absolute;left:18px;bottom:18px;width:104px;height:104px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;text-align:center;font:600 1.25rem/1.05 var(--font-hand);color:var(--fg);background:var(--surface);transform:rotate(-8deg);pointer-events:none;padding:8px}
+@media (max-width:820px){.hero-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* sections */
+.sec{padding-block:clamp(48px,7vw,96px)}
+.h2{font:800 clamp(1.7rem,4.6vw,3rem)/1.05 var(--font-display);letter-spacing:-.03em;text-wrap:balance}
+.sub{max-width:54ch;color:var(--muted);margin-top:14px}
+
+/* shop */
+.shop{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:clamp(20px,3vw,44px);margin-top:30px;align-items:start}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.f{border:2px solid var(--line);background:transparent;border-radius:999px;min-height:42px;padding:0 18px;font-weight:500}
+.f[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.tags{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+.tag{position:relative;display:flex;flex-direction:column;gap:6px;min-width:0;background:var(--surface);color:var(--surface-fg);border:2px solid var(--line);border-radius:8px;padding:40px 16px 16px;transition:transform .2s ease,box-shadow .2s ease}
+.tag::before{content:"";position:absolute;top:12px;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:var(--bg);border:2px solid var(--line)}
+.tag:hover{transform:rotate(-.8deg) translateY(-2px)}
+.tag.on{box-shadow:5px 5px 0 var(--accent)}
+.tag .cat{font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.tag h3{font:700 1.15rem/1.2 var(--font-body);overflow-wrap:anywhere}
+.tag .note{flex:1;font-size:.92rem;color:var(--muted)}
+.ctl{padding-top:12px}
+.add{width:100%;min-height:44px;border-radius:999px;border:2px solid var(--line);background:var(--accent);color:var(--accent-fg);font-weight:700}
+.step{display:flex;align-items:center;justify-content:space-between;gap:6px;border:2px solid var(--line);border-radius:999px;min-height:44px;padding:2px}
+.step button{width:38px;height:38px;border-radius:50%;border:0;background:var(--fg);color:var(--bg);font-weight:700;font-size:1.2rem;line-height:1}
+.step output{font-weight:700;font-variant-numeric:tabular-nums}
+
+/* tray */
+.tray{position:sticky;top:16px;background:var(--surface);color:var(--surface-fg);border:3px solid var(--line);border-radius:28px;padding:20px 20px 22px;box-shadow:0 8px 0 var(--line)}
+.tray-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.tray h3{font:600 2rem/1 var(--font-hand)}
+.count{font:800 1.4rem var(--font-display);font-variant-numeric:tabular-nums}
+.tl{display:flex;flex-direction:column;gap:2px;margin:12px 0 16px}
+.tl li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:8px;border-bottom:1px dashed var(--soft)}
+.tl .nm{min-width:0;font-weight:500;overflow-wrap:anywhere}
+.tl .step{flex:none;min-height:38px}
+.tl .step button{width:32px;height:32px}
+.empty{color:var(--muted);padding-block:8px}
+.acts{display:flex;flex-direction:column;gap:10px}
+.acts .btn{min-height:46px;width:100%}
+.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.btn-quiet{border-color:transparent;text-decoration:underline;text-underline-offset:3px;min-height:40px!important}
+.tray-note{font-size:.88rem;color:var(--muted);margin-top:14px}
+.status{min-height:1.4em;font-size:.92rem;font-weight:500;margin-top:8px}
+textarea.fallback{width:100%;min-height:110px;margin-top:10px;font:inherit;font-size:.92rem;background:var(--bg);color:var(--fg);border:2px solid var(--line);border-radius:10px;padding:10px}
+@media (max-width:960px){
+  .shop{grid-template-columns:minmax(0,1fr)}
+  .tray{position:static}
+}
+.fab{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 20px;border-radius:999px;border:2px solid var(--line);background:var(--accent);color:var(--accent-fg);font-weight:700;text-decoration:none;box-shadow:4px 4px 0 var(--line)}
+.fab b{font:800 1.05rem var(--font-display);font-variant-numeric:tabular-nums}
+@media (min-width:961px){.fab{display:none!important}}
+
+/* reviews */
+.band{background:var(--band);color:var(--band-fg)}
+.band .sub{color:var(--band-muted)}
+.band .btn{border-color:var(--band-fg)}
+.stickers{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:26px;margin-top:36px}
+.sticker{display:flex;flex-direction:column;gap:10px;min-width:0;background:var(--sticker);color:var(--sticker-fg);padding:16px 18px 16px;border-radius:4px;transform:rotate(var(--r,0deg))}
+.sticker .row{display:flex;justify-content:space-between;gap:10px;font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;border-bottom:2px dashed var(--sticker-muted);padding-bottom:8px}
+.sticker .q{font:700 1.25rem/1.3 var(--font-body);flex:1;text-wrap:balance}
+.sticker .ctx{font-size:.92rem;color:var(--sticker-muted)}
+.sticker .who{font:600 1.5rem/1 var(--font-hand)}
+.band-foot{margin-top:34px}
+
+/* location */
+.loc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);margin-top:32px;align-items:start}
+.card{display:flex;flex-direction:column;gap:20px;background:var(--surface);color:var(--surface-fg);border:3px solid var(--line);border-radius:20px;padding:24px}
+.card dt{font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.card dd{font-size:1.15rem;font-weight:500;margin-top:4px}
+.big{font:800 clamp(1.3rem,3vw,1.7rem)/1.15 var(--font-display);letter-spacing:-.02em}
+.contacts{display:flex;flex-wrap:wrap;gap:10px}
+.contacts .btn{min-height:44px;padding:0 18px}
+.phone{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.phone .btn{min-height:38px;padding:0 14px;font-size:.92rem}
+.steps{counter-reset:s;display:flex;flex-direction:column;gap:20px}
+.steps li{display:grid;grid-template-columns:48px minmax(0,1fr);gap:16px;align-items:center;font-size:1.15rem}
+.steps li::before{counter-increment:s;content:counter(s);width:48px;height:48px;border-radius:50%;background:var(--fg);color:var(--bg);font:800 1.2rem var(--font-display);display:grid;place-items:center}
+.route{margin-top:26px}
+@media (max-width:820px){.loc{grid-template-columns:minmax(0,1fr)}}
+
+.foot{padding-block:28px 40px;font-size:.92rem;color:var(--muted);border-top:2px solid var(--line)}
+.foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px}
+
+/* palette picker */
+.pal{position:fixed;left:calc(16px + env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.pal-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 18px;border-radius:999px;border:2px solid var(--line);background:var(--surface);color:var(--surface-fg);font-weight:700;box-shadow:3px 3px 0 var(--line)}
+.pal-btn i{display:inline-block;width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--line)}
+.pal-panel{width:min(330px,calc(100vw - 32px));max-height:calc(100vh - 110px);overflow-y:auto;background:var(--surface);color:var(--surface-fg);border:3px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 6px 0 var(--line)}
+.pal-title{font:800 1rem var(--font-display);letter-spacing:-.02em}
+.sw-list{display:grid;gap:8px;margin:14px 0}
+.sw{display:flex;align-items:center;gap:12px;width:100%;min-height:48px;text-align:left;border:2px solid var(--soft);border-radius:12px;padding:6px 10px;background:transparent;font-weight:500}
+.sw[aria-pressed="true"]{border-color:var(--line);background:var(--bg)}
+.dots{display:flex;flex:none}
+.dots i{display:block;width:22px;height:22px;border-radius:50%;margin-left:-7px;border:2px solid var(--surface)}
+.dots i:first-child{margin-left:0}
+.modes{display:flex;gap:6px}
+.modes button{flex:1;min-height:38px;border:2px solid var(--line);border-radius:999px;background:transparent;font-weight:500;font-size:.92rem}
+.modes button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.pal-note{font-size:.85rem;color:var(--muted);margin-top:12px}
+
+/* cursor: небольшая макаронина */
+.cur{display:none}
+@media (hover:hover) and (pointer:fine){
+  html.has-cur,html.has-cur *{cursor:none!important}
+  html.has-cur textarea{cursor:text!important}
+  .cur{display:block;position:fixed;left:0;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border:2px solid var(--line);border-radius:999px;
+    background-color:var(--noodle-fill);background-image:repeating-linear-gradient(115deg,transparent 0 5px,var(--soft) 5px 7px);
+    pointer-events:none;z-index:9999;opacity:0;transition:opacity .2s ease,width .2s ease,height .2s ease,margin .2s ease,background-color .2s ease}
+  .cur::after{content:"";position:absolute;right:2px;top:50%;width:4px;height:7px;margin-top:-3.5px;border-radius:50%;background:var(--line)}
+  .cur.show{opacity:1}
+  .cur.hov{width:20px;height:20px;margin:-10px 0 0 -10px;background-color:var(--accent)}
+}
+.modes button:disabled{opacity:.4;cursor:default}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  .tag:hover,.btn:hover{transform:none}
+}
+</style>
+
+<style>html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="logo" href="#top">Макарона</a>
+  <nav class="nav" aria-label="Разделы сайта">
+    <a href="#vitrina">Витрина</a>
+    <a href="#tray">Поднос</a>
+    <a href="#otzyvy">Отзывы</a>
+    <a href="#kak">Как найти</a>
+  </nav>
+  <span class="pill" id="status"><i class="dot"></i><span id="statusText">Ежедневно 10:00–21:00</span></span>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <p class="kicker">Кафе-кулинария · посёлок Озёрный</p>
+      <h1 class="mark">Макарона</h1>
+      <svg class="ribbon" viewBox="0 0 400 24" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 12 Q 12.5 0 25 12 T 50 12 T 75 12 T 100 12 T 125 12 T 150 12 T 175 12 T 200 12 T 225 12 T 250 12 T 275 12 T 300 12 T 325 12 T 350 12 T 375 12 T 400 12" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      </svg>
+
+      <div class="hero-grid">
+        <div>
+          <p class="lead">Домашняя еда с витрины. Поешьте у нас или возьмите с собой.</p>
+          <div class="cta">
+            <a class="btn btn-main" href="#vitrina">Выбрать блюда</a>
+            <a class="btn" href="#kak">Как найти</a>
+          </div>
+          <ul class="chips" aria-label="Коротко о кафе">
+            <li class="chip rate">★ 5,0 · 33 оценки в 2ГИС</li>
+            <li class="chip">Средний чек 500 ₽</li>
+            <li class="chip">Постное меню</li>
+            <li class="chip">Кофе и чай с собой</li>
+            <li class="chip">Поздний завтрак</li>
+          </ul>
+        </div>
+        <div class="noodle-box">
+          <canvas id="noodles" aria-hidden="true"></canvas>
+          <p class="stamp" aria-hidden="true">каждый день<br>10–21</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="vitrina" style="padding-top:0">
+    <div class="wrap">
+      <h2 class="h2">Витрина</h2>
+      <p class="sub">Нажмите «На поднос» у блюд, которые хотите, и соберите список. Ассортимент обновляется, поэтому наличие лучше уточнить в кафе.</p>
+
+      <div class="shop">
+        <div>
+          <div class="filters" role="group" aria-label="Категории блюд">
+            <button class="f" type="button" data-cat="all" aria-pressed="true">Все</button>
+            <button class="f" type="button" data-cat="hot" aria-pressed="false">Горячее</button>
+            <button class="f" type="button" data-cat="salad" aria-pressed="false">Салаты</button>
+            <button class="f" type="button" data-cat="bake" aria-pressed="false">Выпечка и десерты</button>
+            <button class="f" type="button" data-cat="drink" aria-pressed="false">Напитки</button>
+          </div>
+          <ul class="tags" id="grid"></ul>
+        </div>
+
+        <aside class="tray" id="tray" aria-label="Ваш поднос">
+          <div class="tray-head">
+            <h3>Ваш поднос</h3>
+            <span class="count" id="count" aria-live="polite">0</span>
+          </div>
+          <ul class="tl" id="trayList"></ul>
+          <div class="acts">
+            <a class="btn btn-main" id="wa" href="#tray" aria-disabled="true" target="_blank" rel="noopener">Отправить список в WhatsApp</a>
+            <button class="btn" type="button" id="copy" aria-disabled="true">Скопировать список</button>
+            <button class="btn btn-quiet" type="button" id="clear" hidden>Очистить поднос</button>
+          </div>
+          <p class="status" id="msg" role="status"></p>
+          <textarea class="fallback" id="fallback" readonly hidden aria-label="Список блюд"></textarea>
+          <p class="tray-note">Список помогает быстро назвать, что вы хотите взять. Наличие блюд уточняйте в кафе.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec band" id="otzyvy">
+    <div class="wrap">
+      <h2 class="h2">Что пишут гости</h2>
+      <p class="sub">Короткие цитаты из отзывов в 2ГИС. Оценка 5,0 по 33 оценкам.</p>
+      <ul class="stickers">
+        <li class="sticker" style="--r:-1.2deg">
+          <div class="row"><span>Отзыв · 2ГИС</span><span>★★★★★</span></div>
+          <p class="q">«Очень приятное кафе, вкусно, чисто, приветливый персонал!»</p>
+          <p class="who">Евгения К.</p>
+        </li>
+        <li class="sticker" style="--r:1deg">
+          <div class="row"><span>Отзыв · 2ГИС</span><span>★★★★★</span></div>
+          <p class="q">«Вспомнил вкус детства.»</p>
+          <p class="ctx">Про трубочки со сгущёнкой. И про борщ.</p>
+          <p class="who">Николай П.</p>
+        </li>
+        <li class="sticker" style="--r:-.6deg">
+          <div class="row"><span>Отзыв · 2ГИС</span><span>★★★★★</span></div>
+          <p class="q">«Очень по домашнему. Чисто, нет запаха еды.»</p>
+          <p class="ctx">Заходит почти каждый день.</p>
+          <p class="who">Макс</p>
+        </li>
+        <li class="sticker" style="--r:1.1deg">
+          <div class="row"><span>Отзыв · 2ГИС</span><span>★★★★★</span></div>
+          <p class="q">«Вы моё спасение»</p>
+          <p class="ctx">Пишет, что почти не готовит, а нормальную готовую еду рядом не найти.</p>
+          <p class="who">Юлия Ж.</p>
+        </li>
+        <li class="sticker" style="--r:-1deg">
+          <div class="row"><span>Отзыв · 2ГИС</span><span>★★★★★</span></div>
+          <p class="q">«Блинчики и пирожки супер!»</p>
+          <p class="ctx">Берёт еду домой, когда не хочется думать, где купить ужин.</p>
+          <p class="who">Ольга И.</p>
+        </li>
+        <li class="sticker" style="--r:.7deg">
+          <div class="row"><span>Отзыв · 2ГИС</span><span>★★★★★</span></div>
+          <p class="q">«Все свежее, вкусное»</p>
+          <p class="ctx">Заехали семьёй на ужин: шницель, кускус, салаты и десерты.</p>
+          <p class="who">Степан Р.</p>
+        </li>
+      </ul>
+      <p class="band-foot"><a class="btn" href="https://2gis.ru/novosibirsk/firm/70000001116917812/tab/reviews" target="_blank" rel="noopener">Все отзывы в 2ГИС</a></p>
+    </div>
+  </section>
+
+  <section class="sec" id="kak">
+    <div class="wrap">
+      <h2 class="h2">Как нас найти</h2>
+      <p class="sub">Мы работаем с августа. Заходите и исследуйте.</p>
+      <div class="loc">
+        <div class="card">
+          <dl style="display:flex;flex-direction:column;gap:18px;margin:0">
+            <div>
+              <dt>Адрес</dt>
+              <dd class="big">Солнечный микрорайон, 333</dd>
+              <dd style="font-size:1rem;font-weight:400;color:var(--muted)">посёлок Озёрный, Новосибирский район, Новосибирская область, 630040</dd>
+            </div>
+            <div>
+              <dt>Часы работы</dt>
+              <dd>Ежедневно, с 10:00 до 21:00</dd>
+            </div>
+            <div>
+              <dt>Написать нам</dt>
+              <dd>
+                <div class="contacts">
+                  <a class="btn btn-main" href="https://wa.me/79833013000" target="_blank" rel="noopener">WhatsApp</a>
+                  <a class="btn" href="https://t.me/makarona_nsk" target="_blank" rel="noopener">Telegram</a>
+                  <a class="btn" href="https://max.ru/u/f9LHodD0cOIuGknNNdTdHgDt_8IgAvFI9COoO3Yt0nwtXZbqlMLFAEOgc48" target="_blank" rel="noopener">Max</a>
+                </div>
+              </dd>
+            </div>
+            <div>
+              <dt>Номер в WhatsApp</dt>
+              <dd class="phone"><span id="phone">+7 983 301-30-00</span><button class="btn" type="button" id="copyPhone">Скопировать</button></dd>
+            </div>
+          </dl>
+        </div>
+        <div>
+          <ol class="steps">
+            <li>Найдите дом 333 в Солнечном микрорайоне посёлка Озёрный.</li>
+            <li>Зайдите в здание и поднимитесь на 2 этаж.</li>
+            <li>После входа поверните налево. Мы там.</li>
+          </ol>
+          <div class="route cta">
+            <a class="btn btn-main" href="https://2gis.ru/novosibirsk/directions/points/%7C82.911197%2C55.148926%3B70000001116917812" target="_blank" rel="noopener">Построить маршрут в 2ГИС</a>
+            <a class="btn" href="https://2gis.ru/novosibirsk/firm/70000001116917812" target="_blank" rel="noopener">Открыть в 2ГИС</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>Макарона, кафе-кулинария. Солнечный микрорайон, 333, посёлок Озёрный.</span>
+    <span>Рейтинг и отзывы: 2ГИС</span>
+  </div>
+</footer>
+
+<div class="pal" id="pal">
+  <div class="pal-panel" id="palPanel" hidden>
+    <p class="pal-title">Цвета сайта</p>
+    <div class="sw-list" id="swList"></div>
+    <div class="modes" id="modes" role="group" aria-label="Тема">
+      <button type="button" data-mode="auto" aria-pressed="true">Авто</button>
+      <button type="button" data-mode="light" aria-pressed="false">Светлая</button>
+      <button type="button" data-mode="dark" aria-pressed="false">Тёмная</button>
+    </div>
+    <p class="pal-note">Томат, Базилик и Баклажан выглядят одинаково в любой теме. Выберите палитру и назовите её мне, остальные и эту кнопку я уберу.</p>
+  </div>
+  <button class="pal-btn" id="palBtn" type="button" aria-expanded="false" aria-controls="palPanel"><i></i>Цвета</button>
+</div>
+
+<a class="fab" id="fab" href="#tray" hidden>Поднос <b id="fabCount">0</b></a>
+
+<script>
+(function(){
+  var CATS={hot:'Горячее',salad:'Салаты',bake:'Выпечка и десерты',drink:'Напитки'};
+  var DISHES=[
+    {id:'borsch',n:'Борщ',c:'hot',t:'Гости называют лучшим'},
+    {id:'shnitzel',n:'Куриный шницель',c:'hot',t:''},
+    {id:'beef',n:'Говядина по-домашнему в сливочном соусе',c:'hot',t:'Из отзывов: очень советуют'},
+    {id:'potato',n:'Запечённый картофель с курицей',c:'hot',t:'Любимое блюдо постоянных гостей'},
+    {id:'cutlet',n:'Котлета с пюре',c:'hot',t:''},
+    {id:'pasta',n:'Паста',c:'hot',t:'Гости хвалят'},
+    {id:'couscous',n:'Кускус с овощами',c:'hot',t:''},
+    {id:'olivier',n:'Оливье',c:'salad',t:''},
+    {id:'georgian',n:'Грузинский салат',c:'salad',t:''},
+    {id:'funchoza',n:'Фунчоза',c:'salad',t:'Одна из самых вкусных, по словам гостей'},
+    {id:'caesar',n:'Цезарь',c:'salad',t:''},
+    {id:'pancakes',n:'Блинчики',c:'bake',t:'С начинкой'},
+    {id:'pies',n:'Пирожки',c:'bake',t:''},
+    {id:'curd',n:'Творожная запеканка',c:'bake',t:'Как в детстве'},
+    {id:'tube',n:'Трубочка со сгущёнкой',c:'bake',t:'С варёной сгущёнкой'},
+    {id:'snickers',n:'Десерт «Сникерс»',c:'bake',t:''},
+    {id:'morse',n:'Вишнёвый морс',c:'drink',t:''},
+    {id:'coffee',n:'Кофе',c:'drink',t:'Можно на безлактозном молоке'},
+    {id:'tea',n:'Чай',c:'drink',t:'Можно с собой'}
+  ];
+  var byId={};DISHES.forEach(function(d){byId[d.id]=d;});
+  var qty={};
+  var $=function(id){return document.getElementById(id);};
+  var grid=$('grid'),trayList=$('trayList');
+
+  /* render showcase once */
+  grid.innerHTML=DISHES.map(function(d){
+    return '<li class="tag" data-id="'+d.id+'" data-cat="'+d.c+'">'+
+      '<p class="cat">'+CATS[d.c]+'</p>'+
+      '<h3>'+d.n+'</h3>'+
+      '<p class="note">'+d.t+'</p>'+
+      '<div class="ctl">'+
+        '<button class="add" type="button" data-act="inc">На поднос</button>'+
+        '<div class="step" hidden>'+
+          '<button type="button" data-act="dec" aria-label="Убрать: '+d.n+'">−</button>'+
+          '<output>1</output>'+
+          '<button type="button" data-act="inc" aria-label="Добавить: '+d.n+'">+</button>'+
+        '</div>'+
+      '</div></li>';
+  }).join('');
+
+  function total(){var s=0;for(var k in qty)s+=qty[k];return s;}
+
+  function listText(){
+    var lines=[];
+    DISHES.forEach(function(d){if(qty[d.id])lines.push('• '+d.n+' × '+qty[d.id]);});
+    return 'Здравствуйте! Хочу взять:\n'+lines.join('\n')+'\nПодскажите, пожалуйста, что есть в наличии.';
+  }
+
+  function setQty(id,n){
+    if(n<=0)delete qty[id];else qty[id]=n;
+    var li=grid.querySelector('[data-id="'+id+'"]');
+    if(li){
+      var q=qty[id]||0;
+      li.classList.toggle('on',q>0);
+      li.querySelector('.add').hidden=q>0;
+      li.querySelector('.step').hidden=q===0;
+      li.querySelector('output').textContent=q;
+    }
+    renderTray();
+  }
+
+  function renderTray(){
+    var t=total();
+    $('count').textContent=t;
+    $('fabCount').textContent=t;
+    $('fab').hidden=t===0;
+    var items=DISHES.filter(function(d){return qty[d.id];});
+    if(!items.length){
+      trayList.innerHTML='<li class="empty">Пока пусто. Выберите блюда на витрине.</li>';
+    }else{
+      trayList.innerHTML=items.map(function(d){
+        return '<li data-id="'+d.id+'"><span class="nm">'+d.n+'</span>'+
+          '<span class="step">'+
+          '<button type="button" data-act="dec" aria-label="Убрать: '+d.n+'">−</button>'+
+          '<output>'+qty[d.id]+'</output>'+
+          '<button type="button" data-act="inc" aria-label="Добавить: '+d.n+'">+</button>'+
+          '</span></li>';
+      }).join('');
+    }
+    var wa=$('wa'),cp=$('copy');
+    if(t){
+      wa.href='https://wa.me/79833013000?text='+encodeURIComponent(listText());
+      wa.setAttribute('aria-disabled','false');
+      cp.setAttribute('aria-disabled','false');
+    }else{
+      wa.href='#tray';
+      wa.setAttribute('aria-disabled','true');
+      cp.setAttribute('aria-disabled','true');
+    }
+    $('clear').hidden=t===0;
+    $('fallback').hidden=true;
+  }
+
+  function onStep(e){
+    var b=e.target.closest('button[data-act]');
+    if(!b)return;
+    var li=b.closest('[data-id]');
+    if(!li)return;
+    var id=li.getAttribute('data-id');
+    var cur=qty[id]||0;
+    setQty(id,b.getAttribute('data-act')==='inc'?cur+1:cur-1);
+    var again=document.querySelector((b.closest('#grid')?'#grid':'#trayList')+' [data-id="'+id+'"] [data-act="'+(b.getAttribute('data-act'))+'"]:not([hidden])');
+    if(again&&again.offsetParent!==null&&again.tagName==='BUTTON'){try{again.focus({preventScroll:true});}catch(_){}}
+  }
+  grid.addEventListener('click',onStep);
+  trayList.addEventListener('click',onStep);
+
+  /* filters */
+  document.querySelector('.filters').addEventListener('click',function(e){
+    var b=e.target.closest('.f');
+    if(!b)return;
+    var c=b.getAttribute('data-cat');
+    document.querySelectorAll('.f').forEach(function(x){x.setAttribute('aria-pressed',String(x===b));});
+    grid.querySelectorAll('.tag').forEach(function(li){li.hidden=!(c==='all'||li.getAttribute('data-cat')===c);});
+  });
+
+  /* tray actions */
+  var msg=$('msg'),msgTimer=0;
+  function say(t){msg.textContent=t;clearTimeout(msgTimer);msgTimer=setTimeout(function(){msg.textContent='';},3000);}
+  function copyText(text,done,fail){
+    var p;
+    try{p=navigator.clipboard&&navigator.clipboard.writeText(text);}catch(_){p=null;}
+    if(p&&p.then){p.then(done,fail);}else{fail();}
+  }
+  $('copy').addEventListener('click',function(){
+    if(!total()){say('Сначала добавьте блюда на поднос.');return;}
+    var text=listText();
+    copyText(text,function(){say('Список скопирован.');},function(){
+      var f=$('fallback');f.value=text;f.hidden=false;f.focus();f.select();
+      say('Выделите текст и скопируйте его.');
+    });
+  });
+  $('clear').addEventListener('click',function(){
+    Object.keys(qty).forEach(function(id){setQty(id,0);});
+    say('Поднос очищен.');
+  });
+  $('wa').addEventListener('click',function(e){
+    if($('wa').getAttribute('aria-disabled')==='true'){e.preventDefault();say('Сначала добавьте блюда на поднос.');}
+  });
+  $('copyPhone').addEventListener('click',function(){
+    var b=$('copyPhone');
+    copyText($('phone').textContent,function(){b.textContent='Скопировано';setTimeout(function(){b.textContent='Скопировать';},2000);},function(){
+      var r=document.createRange();r.selectNodeContents($('phone'));var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+      b.textContent='Выделено';setTimeout(function(){b.textContent='Скопировать';},2000);
+    });
+  });
+
+  renderTray();
+
+  /* open / closed (Новосибирск, UTC+7) */
+  function updateStatus(){
+    try{
+      var parts=new Intl.DateTimeFormat('ru-RU',{timeZone:'Asia/Novosibirsk',hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date());
+      var h=0,m=0;
+      parts.forEach(function(p){if(p.type==='hour')h=(+p.value)%24;if(p.type==='minute')m=+p.value;});
+      var mins=h*60+m,open=mins>=600&&mins<1260;
+      $('status').classList.toggle('closed',!open);
+      $('statusText').textContent=open?'Открыто до 21:00':(mins<600?'Закрыто, откроемся в 10:00':'Закрыто, откроемся в 10:00 завтра');
+    }catch(_){}
+  }
+  updateStatus();setInterval(updateStatus,60000);
+
+  /* living noodles */
+  var cv=$('noodles'),ctx=cv.getContext('2d');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var N=38,L=8,W=0,H=0,dpr=1,strands=[],pointer=null,t=0,raf=0,frame=0,colors={edge:'#3A2A22',fill:'#F4E3CF'};
+
+  function readColors(){
+    var cs=getComputedStyle(document.documentElement);
+    colors.edge=cs.getPropertyValue('--noodle-edge').trim()||colors.edge;
+    colors.fill=cs.getPropertyValue('--noodle-fill').trim()||colors.fill;
+  }
+  function build(){
+    strands=[];
+    L=Math.max(5,(H*0.98)/(N-1));
+    [0.2,0.5,0.8].forEach(function(a,k){
+      var pts=[];
+      for(var i=0;i<N;i++){var x=W*a,y=-20+i*L;pts.push({x:x,y:y,ox:x,oy:y});}
+      strands.push({pts:pts,ax:W*a,off:(k-1)*34,ph:k*1.3});
+    });
+  }
+  function resize(){
+    var r=cv.getBoundingClientRect();
+    W=Math.max(1,r.width);H=Math.max(1,r.height);
+    dpr=Math.min(window.devicePixelRatio||1,2);
+    cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+    build();
+    if(reduce){for(var i=0;i<260;i++)step();draw();}
+  }
+  function step(){
+    t+=0.016;
+    var tx=pointer?pointer.x:W*0.5+Math.sin(t*0.9)*W*0.24;
+    var ty=pointer?pointer.y:H*0.6+Math.cos(t*1.3)*H*0.16;
+    strands.forEach(function(s){
+      var p=s.pts,i,q;
+      for(i=1;i<N;i++){
+        q=p[i];
+        var vx=(q.x-q.ox)*0.985,vy=(q.y-q.oy)*0.985;
+        q.ox=q.x;q.oy=q.y;q.x+=vx;q.y+=vy+0.32;
+      }
+      var hx=tx+s.off,hy=ty+Math.sin(t*2+s.ph)*6;
+      var dx=hx-s.ax,dy=hy+20,d=Math.hypot(dx,dy),max=(N-1)*L*0.97;
+      if(d>max){hx=s.ax+dx/d*max;hy=-20+dy/d*max;}
+      var head=p[N-1];
+      head.x+=(hx-head.x)*0.2;head.y+=(hy-head.y)*0.2;
+      for(var it=0;it<10;it++){
+        p[0].x=s.ax;p[0].y=-20;
+        for(i=0;i<N-1;i++){
+          var a=p[i],b=p[i+1];
+          var ddx=b.x-a.x,ddy=b.y-a.y,dd=Math.hypot(ddx,ddy)||0.0001,diff=(dd-L)/dd;
+          if(i===0){b.x-=ddx*diff;b.y-=ddy*diff;}
+          else{a.x+=ddx*diff*0.5;a.y+=ddy*diff*0.5;b.x-=ddx*diff*0.5;b.y-=ddy*diff*0.5;}
+        }
+      }
+    });
+  }
+  function trace(p){
+    ctx.beginPath();ctx.moveTo(p[0].x,p[0].y);
+    for(var i=1;i<p.length-1;i++){
+      var xc=(p[i].x+p[i+1].x)/2,yc=(p[i].y+p[i+1].y)/2;
+      ctx.quadraticCurveTo(p[i].x,p[i].y,xc,yc);
+    }
+    ctx.lineTo(p[p.length-1].x,p[p.length-1].y);
+  }
+  function draw(){
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,W,H);
+    ctx.lineCap='round';ctx.lineJoin='round';
+    strands.forEach(function(s){
+      trace(s.pts);ctx.lineWidth=14;ctx.strokeStyle=colors.edge;ctx.stroke();
+      trace(s.pts);ctx.lineWidth=8;ctx.strokeStyle=colors.fill;ctx.stroke();
+    });
+  }
+  function loop(){
+    frame++;if(frame%60===1)readColors();
+    step();draw();
+    raf=requestAnimationFrame(loop);
+  }
+  function setPointer(e){
+    var r=cv.getBoundingClientRect();
+    pointer={x:Math.min(Math.max(e.clientX-r.left,0),W),y:Math.min(Math.max(e.clientY-r.top,0),H)};
+  }
+  cv.addEventListener('pointermove',setPointer);
+  cv.addEventListener('pointerdown',setPointer);
+  cv.addEventListener('pointerleave',function(){pointer=null;});
+  cv.addEventListener('pointercancel',function(){pointer=null;});
+
+  window.addEventListener('palettechange',function(){readColors();if(reduce)draw();});
+  readColors();
+  if(window.ResizeObserver){new ResizeObserver(resize).observe(cv);}else{window.addEventListener('resize',resize);}
+  resize();
+  if(!reduce){
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(en){
+        if(en[0].isIntersecting){if(!raf)raf=requestAnimationFrame(loop);}
+        else if(raf){cancelAnimationFrame(raf);raf=0;}
+      }).observe(cv);
+    }else{raf=requestAnimationFrame(loop);}
+  }
+  if(window.matchMedia){
+    var mq=window.matchMedia('(prefers-color-scheme: dark)');
+    var onTheme=function(){readColors();if(reduce)draw();};
+    if(mq.addEventListener)mq.addEventListener('change',onTheme);
+  }
+})();
+</script>
+
+<script>
+(function(){
+  var KEY='mk-pal2',MKEY='mk-mode';
+  var root=document.documentElement;
+  var ORIG=root.getAttribute('data-theme');
+  var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+  var TOK=['bg','fg','muted','surface','surface-fg','line','soft','accent','accent-fg','btn-bg','btn-fg','ok','band','band-fg','band-muted','sticker','sticker-fg','sticker-muted','noodle-edge','noodle-fill'];
+  function rgb(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];}
+  function hex(a){return '#'+a.map(function(x){x=Math.round(Math.max(0,Math.min(255,x)));return (x<16?'0':'')+x.toString(16);}).join('');}
+  function mix(a,b,t){var x=rgb(a),y=rgb(b);return hex([x[0]+(y[0]-x[0])*t,x[1]+(y[1]-x[1])*t,x[2]+(y[2]-x[2])*t]);}
+  function rgba(h,a){var x=rgb(h);return 'rgba('+x[0]+','+x[1]+','+x[2]+','+a+')';}
+
+  var PAL=[
+    {id:'sand',n:'Песок',dots:['#E7D5C3','#A8574A','#4A372D']},
+    {id:'cappuccino',n:'Капучино',
+      L:{bg:'#D8C3AD',fg:'#33251D',muted:'#62493A',surface:'#F2E7DB',accent:'#8A5A3C',band:'#3F2D22',bandM:'#CDB59C',sticker:'#EAD8C3',noodle:'#F2E2CE'},
+      D:{bg:'#231A14',fg:'#EADBC8',muted:'#BBA58E',surface:'#31251D',accent:'#D2A07A',band:'#2C2118',bandM:'#BBA58E',sticker:'#DDBF9F'}},
+    {id:'sage',n:'Шалфей',
+      L:{bg:'#E3D8C5',fg:'#2E2A22',muted:'#5E5849',surface:'#F5EFE2',accent:'#587456',band:'#36402F',bandM:'#C5CCB6',sticker:'#EBE1CC',noodle:'#F3E8D2'},
+      D:{bg:'#1F211A',fg:'#E8E1D0',muted:'#B3AD98',surface:'#2B2E24',accent:'#A7C49F',band:'#262B20',bandM:'#B3AD98',sticker:'#D9D0B8'}},
+    {id:'honey',n:'Мёд',
+      L:{bg:'#E8CFA6',fg:'#3B2A1A',muted:'#664B2F',surface:'#F8EEDB',accent:'#A5522B',band:'#4A3420',bandM:'#DCC49C',sticker:'#F2DDB8',noodle:'#F8EACB'},
+      D:{bg:'#261C12',fg:'#F0E0C4',muted:'#C2AB88',surface:'#34281A',accent:'#E0A06A',band:'#2E2214',bandM:'#C2AB88',sticker:'#E6C897'}},
+    {id:'ultramarine',n:'Ультрамарин',
+      L:{bg:'#DDE6F2',fg:'#14284B',muted:'#44577A',surface:'#F4F8FD',accent:'#C93D28',band:'#14284B',bandM:'#B8C6DE',sticker:'#CFDDF1',noodle:'#FFF3D6'},
+      D:{bg:'#101B33',fg:'#E4ECF8',muted:'#A9B9D4',surface:'#1A2A4A',accent:'#FF8A70',band:'#0B1426',bandM:'#A9B9D4',sticker:'#C9D8EE'}},
+    {id:'tomato',n:'Томат',single:true,
+      D:{bg:'#A82C1B',fg:'#FFF0DD',muted:'#F7D6C2',surface:'#8C2416',accent:'#FFD66B',band:'#5E160C',bandM:'#F2C9B3',sticker:'#FFD66B'}},
+    {id:'basil',n:'Базилик',single:true,
+      D:{bg:'#1F4D36',fg:'#F4EBD0',muted:'#C9D6BE',surface:'#17402C',accent:'#F2B544',band:'#0F2A1C',bandM:'#B7C9B0',sticker:'#E9D8A6'}},
+    {id:'eggplant',n:'Баклажан',single:true,
+      D:{bg:'#36203F',fg:'#F7E9F0',muted:'#D3BCD0',surface:'#2A1731',accent:'#FF9F6B',band:'#1E0F24',bandM:'#C9B2C7',sticker:'#F3D6C8'}}
+  ];
+
+  function vars(p,dark){
+    var c=dark?p.D:p.L,v={};
+    v['bg']=c.bg;v['fg']=c.fg;v['muted']=c.muted;v['surface']=c.surface;v['surface-fg']=c.fg;v['line']=c.fg;
+    v['soft']=rgba(c.fg,dark?0.28:0.25);
+    v['accent']=c.accent;
+    v['band']=c.band;v['band-muted']=c.bandM;v['sticker']=c.sticker;
+    if(dark){
+      v['accent-fg']=c.bg;v['btn-bg']=c.sticker;v['btn-fg']=c.bg;v['ok']='#8DC48A';
+      v['band-fg']=c.fg;v['sticker-fg']=c.bg;v['sticker-muted']=mix(c.bg,'#000000',0.3);
+      v['noodle-edge']=mix(c.bg,'#000000',0.35);v['noodle-fill']=c.sticker;
+    }else{
+      v['accent-fg']='#FFFFFF';v['btn-bg']=c.fg;v['btn-fg']=c.surface;v['ok']='#4F7A4A';
+      v['band-fg']=c.surface;v['sticker-fg']=c.fg;v['sticker-muted']=c.muted;
+      v['noodle-edge']=c.fg;v['noodle-fill']=c.noodle;
+    }
+    return v;
+  }
+
+  var st={pal:'sand',mode:'auto'};
+  try{
+    var sp=localStorage.getItem(KEY),sm=localStorage.getItem(MKEY);
+    if(sp&&PAL.some(function(x){return x.id===sp;}))st.pal=sp;
+    if(sm==='light'||sm==='dark'||sm==='auto')st.mode=sm;
+  }catch(_){}
+
+  function isDark(){
+    var t=root.getAttribute('data-theme');
+    return t?t==='dark':mq.matches;
+  }
+
+  var list=document.getElementById('swList'),modes=document.getElementById('modes');
+  list.innerHTML=PAL.map(function(p){
+    var d=p.dots||(p.L?[p.L.bg,p.L.accent,p.L.band]:[p.D.bg,p.D.accent,p.D.sticker]);
+    return '<button type="button" class="sw" data-id="'+p.id+'" aria-pressed="false">'+
+      '<span class="dots">'+d.map(function(c){return '<i style="background:'+c+'"></i>';}).join('')+'</span>'+
+      '<span>'+p.n+'</span></button>';
+  }).join('');
+
+  function apply(){
+    var p=PAL.filter(function(x){return x.id===st.pal;})[0]||PAL[0];
+    TOK.forEach(function(k){root.style.removeProperty('--'+k);});
+    root.style.removeProperty('color-scheme');
+    if(st.mode==='auto'){
+      if(ORIG)root.setAttribute('data-theme',ORIG);else root.removeAttribute('data-theme');
+    }else{
+      root.setAttribute('data-theme',st.mode);
+    }
+    if(p.L||p.single){
+      var dk=p.single?true:isDark(),v=vars(p,dk);
+      Object.keys(v).forEach(function(k){root.style.setProperty('--'+k,v[k]);});
+      if(dk)root.style.setProperty('color-scheme','dark');
+    }
+    list.querySelectorAll('.sw').forEach(function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-id')===st.pal));});
+    modes.querySelectorAll('button').forEach(function(b){
+      b.setAttribute('aria-pressed',String(b.getAttribute('data-mode')===st.mode));
+      b.disabled=!!p.single;
+    });
+    window.dispatchEvent(new Event('palettechange'));
+  }
+
+  function save(){try{localStorage.setItem(KEY,st.pal);localStorage.setItem(MKEY,st.mode);}catch(_){}}
+
+  list.addEventListener('click',function(e){
+    var b=e.target.closest('.sw');if(!b)return;
+    st.pal=b.getAttribute('data-id');apply();save();
+  });
+  modes.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b||b.disabled)return;
+    st.mode=b.getAttribute('data-mode');apply();save();
+  });
+  if(mq.addEventListener)mq.addEventListener('change',function(){if(st.mode==='auto')apply();});
+
+  var btn=document.getElementById('palBtn'),panel=document.getElementById('palPanel');
+  function toggle(open){
+    panel.hidden=!open;
+    btn.setAttribute('aria-expanded',String(open));
+  }
+  btn.addEventListener('click',function(){toggle(panel.hidden);});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!panel.hidden){toggle(false);btn.focus();}});
+  document.addEventListener('click',function(e){
+    if(!panel.hidden&&!e.target.closest('#pal'))toggle(false);
+  });
+
+  apply();
+})();
+</script>
+
+<script>
+(function(){
+  if(!window.matchMedia||!window.matchMedia('(hover: hover) and (pointer: fine)').matches)return;
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var el=document.createElement('div');
+  el.className='cur';el.setAttribute('aria-hidden','true');
+  document.body.appendChild(el);
+  var x=0,y=0,tx=0,ty=0,ang=0,tang=0,down=false,raf=0,ready=false;
+  var HOV='a,button,.tag,.sw,[role="button"],label,summary,select';
+
+  function frame(){
+    var k=reduce?1:0.38;
+    var dx=tx-x,dy=ty-y;
+    x+=dx*k;y+=dy*k;
+    var sp=Math.hypot(dx,dy);
+    if(sp>2)tang=Math.atan2(dy,dx)*180/Math.PI;
+    var da=((tang-ang+540)%360)-180;
+    ang+=da*(reduce?1:0.22);
+    el.style.transform='translate3d('+x.toFixed(1)+'px,'+y.toFixed(1)+'px,0) rotate('+ang.toFixed(1)+'deg) scale('+(down?0.8:1)+')';
+    if(sp>0.2||Math.abs(da)>0.3){raf=requestAnimationFrame(frame);}else{raf=0;}
+  }
+  function kick(){if(!raf)raf=requestAnimationFrame(frame);}
+
+  document.addEventListener('pointermove',function(e){
+    if(e.pointerType&&e.pointerType!=='mouse')return;
+    tx=e.clientX;ty=e.clientY;
+    if(!ready){
+      ready=true;x=tx;y=ty;
+      document.documentElement.classList.add('has-cur');
+    }
+    el.classList.add('show');
+    kick();
+  },{passive:true});
+  document.addEventListener('pointerover',function(e){
+    var t=e.target;
+    el.classList.toggle('hov',!!(t&&t.closest&&t.closest(HOV)));
+  },{passive:true});
+  document.addEventListener('pointerdown',function(){down=true;kick();});
+  document.addEventListener('pointerup',function(){down=false;kick();});
+  document.documentElement.addEventListener('mouseleave',function(){el.classList.remove('show');});
+  document.documentElement.addEventListener('mouseenter',function(){if(ready)el.classList.add('show');});
+})();
+</script>
+</body>
+</html>
